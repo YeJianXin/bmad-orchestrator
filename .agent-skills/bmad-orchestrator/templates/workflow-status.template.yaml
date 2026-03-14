@@ -115,20 +115,110 @@ workflow_status:
     command: "/code-review"
     notes: "Recommended for Level 2+ projects"
 
+  # ============================================================
+  # TEA Workflows (Standalone - Available After Phase 3)
+  # ============================================================
+  # TEA (Test Architecture) provides comprehensive testing workflows
+  # that can be triggered anytime after Phase 3 (Solutioning) is complete.
+  # Status is set based on project level during initialization.
+
+  - name: tea-discovery
+    phase: TEA
+    status: "optional"
+    description: "Discover TEA workflows for your project"
+    command: "/tea-discovery"
+    notes: "Use first time to explore TEA capabilities"
+
+  - name: tea-tmt
+    phase: TEA
+    status: "optional"
+    description: "Teach Me Testing - 7-session fundamental course"
+    command: "/tea-tmt"
+    notes: "Recommended for team members new to testing"
+
+  - name: tea-tf
+    phase: TEA
+    status: "{{TEA_TF_STATUS}}"  # conditional based on project level
+    description: "Test Framework setup and scaffolding"
+    command: "/tea-tf"
+    notes: "Required for Level 1+, optional for Level 0"
+
+  - name: tea-td
+    phase: TEA
+    status: "{{TEA_TD_STATUS}}"  # conditional based on project level
+    description: "Risk-based Test Design"
+    command: "/tea-td"
+    notes: "Required for Level 2+, optional for Level 1"
+
+  - name: tea-ci
+    phase: TEA
+    status: "optional"
+    description: "CI/CD Quality Gates configuration"
+    command: "/tea-ci"
+    notes: "Recommended for projects with CI/CD"
+
+  - name: tea-at
+    phase: TEA
+    status: "{{TEA_AT_STATUS}}"  # conditional based on project level
+    description: "ATDD - Acceptance Test-Driven Development"
+    command: "/tea-at"
+    notes: "Required for Level 1+, use before each story"
+
+  - name: tea-ta
+    phase: TEA
+    status: "{{TEA_TA_STATUS}}"  # conditional based on project level
+    description: "Test Automation"
+    command: "/tea-ta"
+    notes: "Required for Level 1+, automate tests after implementation"
+
+  - name: tea-rv
+    phase: TEA
+    status: "{{TEA_RV_STATUS}}"  # conditional based on project level
+    description: "Test Review with 0-100 scoring"
+    command: "/tea-rv"
+    notes: "Required for Level 2+, recommended for Level 1"
+
+  - name: tea-nr
+    phase: TEA
+    status: "{{TEA_NR_STATUS}}"  # conditional based on project level
+    description: "NFR Assessment"
+    command: "/tea-nr"
+    notes: "Required for Level 3+, optional for Level 2"
+
+  - name: tea-tr
+    phase: TEA
+    status: "{{TEA_TR_STATUS}}"  # conditional based on project level
+    description: "Traceability matrix"
+    command: "/tea-tr"
+    notes: "Required for Level 2+, recommended for Level 1"
+
 # ============================================================
 # Status Legend
 # ============================================================
 # required              - Must be completed before proceeding to next phase
 # recommended           - Strongly suggested for project quality
 # optional              - Can be skipped based on project needs
-# conditional           - Required based on context (e.g., sprint active)
+# conditional           - Required based on context (e.g., sprint active, project level)
 # {file-path}           - Workflow completed, shows output document
 # skipped               - User explicitly chose to skip this workflow
 #
 # plannotator_review    - "approved" | "pending" | "changes-requested"
 # reviewed_at           - ISO 8601 timestamp of last plannotator review
 #
+# TEA Workflows:
+#   TEA workflows are standalone and can be triggered anytime after Phase 3.
+#   Status is set based on project level during initialization:
+#   - Level 0: All TEA workflows are "optional"
+#   - Level 1: TF, AT, TA are "required"; others are "optional" or "recommended"
+#   - Level 2: TF, TD, AT, TA, RV, TR are "required"; CI is "optional"
+#   - Level 3+: All TEA workflows are "required"
+#
 # Phase Gate Review (optional but recommended):
 #   After completing any phase document, run:
 #   bash scripts/phase-gate-review.sh <doc-file> "<title>"
 #   This opens plannotator for review before transitioning to next phase.
+#
+# TEA + plannotator Integration:
+#   TEA workflows can also be reviewed with plannotator:
+#   bash scripts/phase-gate-review.sh docs/tea-*.md "<title>"
+

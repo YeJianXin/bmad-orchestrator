@@ -189,6 +189,178 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 
 ---
 
+## TEA Workflows (Standalone - Available After Phase 3)
+
+**Purpose:** BMAD TEA (Test Architecture) provides comprehensive testing workflows for quality assurance, test automation, and test governance.
+
+**When to use:** After completing Phase 3 (Solutioning) or anytime during/after Phase 4 (Implementation).
+
+**Installation:** TEA framework is installed via `bash scripts/install.sh` (use `--skip-tea` to skip).
+
+**Activation:** Use `/tea-discovery` to explore available TEA workflows.
+
+### TEA Workflow Categories
+
+#### Education: Teach Me Testing (TMT)
+
+**Purpose:** 7-session fundamental course for learning testing concepts.
+
+**Workflow:** `/tea-tmt`
+
+**Output:** Testing knowledge and skills through structured learning sessions.
+
+**Duration:** 7 sessions (self-paced)
+
+**Recommended for:** All team members new to testing
+
+#### Strategy & Design
+
+**Risk-based Test Design (TD)**
+
+**Purpose:** Design tests based on risk assessment and priority.
+
+**Workflow:** `/tea-td`
+
+**Output:** Risk-based test plan with prioritized test scenarios.
+
+**Duration:** 2-4 hours
+
+**Recommended for:** Level 2+ projects
+
+#### Foundation
+
+**Test Framework (TF)**
+
+**Purpose:** Scaffolding and setup of test framework infrastructure.
+
+**Workflow:** `/tea-tf`
+
+**Output:** Configured test framework with CI/CD quality gates.
+
+**Duration:** 4-8 hours
+
+**Required for:** Level 2+ projects
+
+**CI/CD Quality Gates (CI)**
+
+**Purpose:** Set up automated quality gates in CI/CD pipeline.
+
+**Workflow:** `/tea-ci`
+
+**Output:** CI/CD pipeline with automated test execution and quality checks.
+
+**Duration:** 2-4 hours
+
+**Recommended for:** All projects with CI/CD
+
+#### Implementation
+
+**ATDD - Acceptance Test-Driven Development (AT)**
+
+**Purpose:** Red-phase failing tests for acceptance criteria.
+
+**Workflow:** `/tea-at`
+
+**Output:** Failing acceptance tests that drive implementation.
+
+**Duration:** 1-2 hours per feature
+
+**Recommended for:** Level 1+ projects
+
+**Test Automation (TA)**
+
+**Purpose:** Automate manual tests and create test suites.
+
+**Workflow:** `/tea-ta`
+
+**Output:** Automated test suites with execution reports.
+
+**Duration:** 4-12 hours (depends on test coverage)
+
+**Recommended for:** Level 2+ projects
+
+#### Audit & Governance
+
+**Test Review (RV)**
+
+**Purpose:** Comprehensive test review with 0-100 scoring.
+
+**Workflow:** `/tea-rv`
+
+**Output:** Test review report with quality score and recommendations.
+
+**Duration:** 2-4 hours
+
+**Recommended for:** Level 2+ projects
+
+**NFR Assessment (NR)**
+
+**Purpose:** Non-functional requirements testing assessment.
+
+**Workflow:** `/tea-nr`
+
+**Output:** NFR test plan covering performance, security, reliability.
+
+**Duration:** 2-6 hours
+
+**Recommended for:** Level 3+ projects
+
+**Traceability (TR)**
+
+**Purpose:** Requirements to test cases traceability matrix.
+
+**Workflow:** `/tea-tr`
+
+**Output:** Traceability matrix linking requirements to tests.
+
+**Duration:** 1-3 hours
+
+**Recommended for:** Level 2+ projects
+
+### TEA Workflow Selection Guide
+
+| Project Level | Recommended TEA Workflows |
+|---------------|---------------------------|
+| Level 0 | TF (if needed), TA (minimal) |
+| Level 1 | TF, AT, TA (basic) |
+| Level 2 | TF, TD, AT, TA, RV, TR |
+| Level 3 | All TEA workflows (comprehensive) |
+| Level 4 | All TEA workflows + custom extensions |
+
+### TEA Integration with BMAD Phases
+
+**After Phase 3 (Solutioning):**
+- Run `/tea-tf` to set up test framework
+- Run `/tea-td` for risk-based test design
+- Run `/tea-ci` to configure CI/CD quality gates
+
+**During Phase 4 (Implementation):**
+- Run `/tea-at` before implementing each story (ATDD approach)
+- Run `/tea-ta` to automate tests as features are implemented
+
+**After Phase 4 (Implementation Complete):**
+- Run `/tea-rv` for comprehensive test review
+- Run `/tea-nr` for NFR assessment
+- Run `/tea-tr` for traceability verification
+
+**Anytime:**
+- Run `/tea-tmt` for team education on testing
+- Run `/tea-discovery` to explore available workflows
+
+### TEA Discovery Workflow
+
+**Purpose:** Interactive discovery of TEA workflows based on project context.
+
+**Workflow:** `/tea-discovery`
+
+**Output:** Recommended TEA workflows for your specific project.
+
+**Duration:** 15-30 minutes
+
+**When to use:** First time using TEA, or when unsure which TEA workflows to run.
+
+---
+
 ## Phase 4: Implementation (Required)
 
 **Purpose:** Execute development through sprints and stories.
@@ -283,8 +455,12 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 | 3 | Architecture | Skip |
 | 4 | Sprint Planning | Simplified (single story) |
 | 4 | Dev Story | **Required** |
+| TEA | TF | Optional |
+| TEA | TA | Optional (minimal) |
 
 **Typical flow:** Tech Spec → Single Story → Implementation
+
+**TEA Integration:** Basic test framework (TF) and minimal automation (TA) if needed
 
 **Example projects:**
 - Bug fix
@@ -307,8 +483,13 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 | 4 | Sprint Planning | **Required** |
 | 4 | Create Story | **Required** (multiple) |
 | 4 | Dev Story | **Required** |
+| TEA | TF | **Required** |
+| TEA | AT | **Required** |
+| TEA | TA | **Required** (basic) |
 
 **Typical flow:** Product Brief → Tech Spec → Sprint Planning → Stories → Implementation
+
+**TEA Integration:** Test framework (TF), ATDD (AT), and basic test automation (TA)
 
 **Example projects:**
 - New API endpoint
@@ -333,8 +514,17 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 | 4 | Create Story | **Required** (multiple) |
 | 4 | Dev Story | **Required** |
 | 4 | Code Review | Recommended |
+| TEA | TF | **Required** |
+| TEA | TD | **Required** |
+| TEA | CI | Recommended |
+| TEA | AT | **Required** |
+| TEA | TA | **Required** |
+| TEA | RV | **Required** |
+| TEA | TR | **Required** |
 
 **Typical flow:** Product Brief → PRD → Architecture → Sprint Planning → Stories → Implementation
+
+**TEA Integration:** Full TEA suite including test framework (TF), test design (TD), ATDD (AT), automation (TA), review (RV), and traceability (TR)
 
 **Example projects:**
 - User authentication system
@@ -358,8 +548,18 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 | 4 | Create Story | **Required** (many) |
 | 4 | Dev Story | **Required** |
 | 4 | Code Review | **Required** |
+| TEA | TF | **Required** |
+| TEA | TD | **Required** |
+| TEA | CI | **Required** |
+| TEA | AT | **Required** |
+| TEA | TA | **Required** |
+| TEA | RV | **Required** |
+| TEA | NR | **Required** |
+| TEA | TR | **Required** |
 
 **Typical flow:** Product Brief → Research → PRD → Architecture → Gate Check → Multiple Sprints → Implementation
+
+**TEA Integration:** Comprehensive TEA suite including all workflows plus NFR assessment (NR)
 
 **Example projects:**
 - Third-party API integration
@@ -383,8 +583,19 @@ Complete reference for all 4 BMAD phases, workflows, and project levels.
 | 4 | Create Story | **Required** (extensive) |
 | 4 | Dev Story | **Required** |
 | 4 | Code Review | **Required** |
+| TEA | TF | **Required** |
+| TEA | TD | **Required** |
+| TEA | CI | **Required** |
+| TEA | AT | **Required** |
+| TEA | TA | **Required** |
+| TEA | RV | **Required** |
+| TEA | NR | **Required** |
+| TEA | TR | **Required** |
+| TEA | Custom | **Required** (project-specific) |
 
 **Typical flow:** Product Brief → Research → PRD → UX Design → Architecture → Gate Check → Many Sprints → Implementation → Reviews
+
+**TEA Integration:** Full TEA suite plus custom workflows for enterprise-specific testing needs
 
 **Example projects:**
 - Platform migration

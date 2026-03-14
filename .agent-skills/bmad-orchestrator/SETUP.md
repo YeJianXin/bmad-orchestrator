@@ -1,7 +1,7 @@
 # BMAD Orchestrator — Setup Guide
 
-> **BMAD Method v6** + **plannotator** integration
-> Structured AI-driven development with visual plan review at every phase gate.
+> **BMAD Method v6** + **TEA Framework** + **plannotator** integration
+> Structured AI-driven development with testing architecture and visual plan review at every phase gate.
 
 ---
 
@@ -27,9 +27,14 @@ Your AI Agent
      │  [plannotator review]
      ▼
  Phase 4: Implementation ← /sprint-planning → /dev-story
+     │
+     ▼
+ TEA Workflows (Standalone) ← /tea-discovery, /tea-tf, /tea-at, etc.
 ```
 
 **plannotator** opens a visual browser UI after each phase document is created. You annotate, approve, or request changes — then your agent continues to the next phase.
+
+**TEA Framework** provides comprehensive testing workflows that can be triggered anytime after Phase 3.
 
 ---
 
@@ -41,13 +46,18 @@ Your AI Agent
 bash scripts/install.sh
 ```
 
-This installs plannotator CLI and configures the Claude Code `ExitPlanMode` hook.
+This installs:
+- **BMAD TEA Framework** — comprehensive testing workflows
+- **plannotator CLI** — visual plan review
+- **Claude Code hook** — auto-review on ExitPlanMode
+
 **Restart Claude Code after running this.**
 
 Options:
 ```bash
 bash scripts/install.sh --init-project       # Also initialize BMAD in current directory
-bash scripts/install.sh --skip-plannotator   # BMAD scripts only, no plannotator
+bash scripts/install.sh --skip-plannotator   # BMAD + TEA only, no plannotator
+bash scripts/install.sh --skip-tea           # BMAD + plannotator only, no TEA
 bash scripts/install.sh --dry-run            # Preview without making changes
 ```
 
@@ -231,6 +241,102 @@ planno review
 
 ---
 
+## TEA Framework Integration
+
+BMAD TEA (Test Architecture) provides comprehensive testing workflows that can be triggered **anytime after Phase 3 (Solutioning)** is complete.
+
+### When to Use TEA
+
+**After Phase 3 complete:**
+- Set up test framework: `/tea-tf`
+- Design tests based on risk: `/tea-td`
+- Configure CI/CD quality gates: `/tea-ci`
+
+**During Phase 4 implementation:**
+- Apply ATDD before each story: `/tea-at`
+- Automate tests after implementation: `/tea-ta`
+
+**After Phase 4 complete:**
+- Review test quality: `/tea-rv`
+- Assess non-functional requirements: `/tea-nr`
+- Verify traceability: `/tea-tr`
+
+**Anytime:**
+- Discover TEA workflows: `/tea-discovery`
+- Learn testing fundamentals: `/tea-tmt`
+
+### TEA Workflow Commands
+
+| Command | Purpose | When to Use |
+|---------|---------|--------------|
+| `/tea-discovery` | Discover TEA workflows for your project | First time using TEA |
+| `/tea-tmt` | Teach Me Testing - 7-session course | Team education |
+| `/tea-tf` | Test Framework setup | After Phase 3 |
+| `/tea-td` | Risk-based Test Design | After Phase 3 |
+| `/tea-ci` | CI/CD Quality Gates | After Phase 3 |
+| `/tea-at` | ATDD (red-phase tests) | Before each story |
+| `/tea-ta` | Test Automation | After implementation |
+| `/tea-rv` | Test Review (0-100 score) | After Phase 4 |
+| `/tea-nr` | NFR Assessment | After Phase 4 (Level 3+) |
+| `/tea-tr` | Traceability matrix | After Phase 4 (Level 2+) |
+
+### TEA by Project Level
+
+| Level | Required TEA Workflows |
+|-------|------------------------|
+| Level 0 | TF (optional), TA (minimal) |
+| Level 1 | TF, AT, TA (basic) |
+| Level 2 | TF, TD, AT, TA, RV, TR |
+| Level 3+ | All TEA workflows + NR |
+
+### Typical TEA Integration Flow
+
+```
+Phase 3 Complete (Architecture)
+       ↓
+/tea-discovery  →  Explore TEA workflows
+/tea-tf         →  Set up test framework
+/tea-td         →  Risk-based test design
+/tea-ci         →  Configure CI/CD quality gates
+       ↓
+Phase 4 (Implementation)
+       ↓
+/tea-at         →  ATDD for each story
+/tea-ta         →  Automate tests
+       ↓
+Phase 4 Complete
+       ↓
+/tea-rv         →  Test review
+/tea-nr         →  NFR assessment (Level 3+)
+/tea-tr         →  Traceability (Level 2+)
+```
+
+### Getting Started with TEA
+
+1. **Discover TEA workflows:**
+   ```text
+   /tea-discovery
+   ```
+
+2. **Set up test framework (after Phase 3):**
+   ```text
+   /tea-tf
+   ```
+
+3. **Apply ATDD during implementation:**
+   ```text
+   /tea-at
+   ```
+
+4. **Review tests after implementation:**
+   ```text
+   /tea-rv
+   ```
+
+---
+
+---
+
 ## Notes Auto-Save: Obsidian or Bear (Optional)
 
 Approved phase documents can be auto-saved with YAML frontmatter and `[[BMAD Plans]]` backlinks.
@@ -270,7 +376,7 @@ tags: [bmad, phase-2, prd, my-app]
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `install.sh` | Full setup: plannotator + hooks + scripts | `bash scripts/install.sh` |
+| `install.sh` | Full setup: TEA + plannotator + hooks + scripts | `bash scripts/install.sh` |
 | `init-project.sh` | Initialize BMAD in a project | `bash scripts/init-project.sh --name MyApp --type web-app --level 2` |
 | `check-status.sh` | Display current workflow status | `bash scripts/check-status.sh` |
 | `phase-gate-review.sh` | Submit doc to plannotator for review | `bash scripts/phase-gate-review.sh docs/prd-*.md` |
@@ -287,6 +393,15 @@ ls bmad/config.yaml
 
 # Re-initialize if missing
 /workflow-init
+```
+
+**TEA framework not available:**
+```bash
+# Check if TEA is installed
+skills list | grep bmad-tea
+
+# Re-install TEA
+npx skills add https://skills.sh/airclear/skills/bmad-tea --skill bmad-tea
 ```
 
 **plannotator doesn't open:**

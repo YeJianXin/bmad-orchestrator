@@ -21,12 +21,14 @@ NC='\033[0m'
 
 # ── Flags ─────────────────────────────────────────────────────────────────────
 SKIP_PLANNOTATOR=false
+SKIP_TEA=false
 INIT_PROJECT=false
 DRY_RUN=false
 
 for arg in "$@"; do
   case $arg in
     --skip-plannotator) SKIP_PLANNOTATOR=true ;;
+    --skip-tea)         SKIP_TEA=true ;;
     --init-project)     INIT_PROJECT=true ;;
     --dry-run)          DRY_RUN=true ;;
     -h|--help)
@@ -34,6 +36,7 @@ for arg in "$@"; do
       echo ""
       echo "Options:"
       echo "  --skip-plannotator   Set up BMAD only, skip plannotator install"
+      echo "  --skip-tea           Set up BMAD only, skip TEA framework install"
       echo "  --init-project       Also initialize BMAD in the current project"
       echo "  --dry-run            Preview steps without making changes"
       echo "  -h, --help           Show this help"
@@ -46,7 +49,8 @@ done
 echo ""
 echo -e "${BLUE}${BOLD}╔══════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}${BOLD}║   BMAD Orchestrator — Setup                      ║${NC}"
-echo -e "${BLUE}${BOLD}║   BMAD Method v6 + plannotator integration        ║${NC}"
+echo -e "${BLUE}${BOLD}║   BMAD Method v6 + TEA Framework                 ║${NC}"
+echo -e "${BLUE}${BOLD}║   + plannotator integration                       ║${NC}"
 echo -e "${BLUE}${BOLD}╚══════════════════════════════════════════════════╝${NC}"
 echo ""
 
@@ -93,11 +97,46 @@ fi
 
 echo ""
 
-# ── Resolve skill directory (used in Steps 2 and 3) ──────────────────────────
+# ── Resolve skill directory (used in Steps 2, 3, and 4) ──────────────────────────
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# ── Step 2: Set up Claude Code hook ──────────────────────────────────────────
-echo -e "${BOLD}Step 2: plannotator Hook (Claude Code)${NC}"
+# ── Step 2: Set up BMAD TEA Framework ─────────────────────────────────────────────
+echo -e "${BOLD}Step 2: BMAD TEA Framework${NC}"
+echo ""
+
+if [ "$SKIP_TEA" = true ]; then
+  echo -e "  ${GRAY}Skipping TEA framework (--skip-tea)${NC}"
+  TEA_OK=false
+elif command -v skills &>/dev/null && skills list | grep -q "bmad-tea"; then
+  echo -e "  ${GREEN}✓ BMAD TEA framework already installed${NC}"
+  TEA_OK=true
+else
+  echo -e "  ${YELLOW}BMAD TEA framework not found. Installing...${NC}"
+  echo ""
+
+  if [ "$DRY_RUN" = true ]; then
+    echo -e "  ${GRAY}[DRY RUN] Would run: npx skills add https://skills.sh/airclear/skills/bmad-tea --skill bmad-tea${NC}"
+    TEA_OK=false
+  else
+    # Install BMAD TEA framework
+    if npx skills add https://skills.sh/airclear/skills/bmad-tea --skill bmad-tea; then
+      echo ""
+      echo -e "  ${GREEN}✓ BMAD TEA framework installed${NC}"
+      echo -e "  ${BLUE}  TEA workflows available after Phase 3 (Solutioning)${NC}"
+      TEA_OK=true
+    else
+      echo ""
+      echo -e "  ${RED}✗ BMAD TEA framework install failed.${NC}"
+      echo -e "  ${GRAY}  Manual install: https://skills.sh/airclear/skills/bmad-tea${NC}"
+      TEA_OK=false
+    fi
+  fi
+fi
+
+echo ""
+
+# ── Step 3: Set up Claude Code hook ──────────────────────────────────────────
+echo -e "${BOLD}Step 3: plannotator Hook (Claude Code)${NC}"
 echo ""
 
 HOOK_SCRIPT="${SKILL_DIR}/../plannotator/scripts/setup-hook.sh"
@@ -123,8 +162,8 @@ fi
 
 echo ""
 
-# ── Step 3: Verify BMAD scripts are executable ────────────────────────────────
-echo -e "${BOLD}Step 3: BMAD Scripts${NC}"
+# ── Step 4: Verify BMAD scripts are executable ────────────────────────────────
+echo -e "${BOLD}Step 4: BMAD Scripts${NC}"
 echo ""
 
 SCRIPTS=(
@@ -149,9 +188,9 @@ done
 
 echo ""
 
-# ── Step 4: Optional project initialization ───────────────────────────────────
+# ── Step 5: Optional project initialization ───────────────────────────────────
 if [ "$INIT_PROJECT" = true ]; then
-  echo -e "${BOLD}Step 4: Initialize BMAD in Current Project${NC}"
+  echo -e "${BOLD}Step 5: Initialize BMAD in Current Project${NC}"
   echo ""
 
   INIT_SCRIPT="${SKILL_DIR}/scripts/init-project.sh"
@@ -177,6 +216,9 @@ if [ "$PLANNOTATOR_OK" = true ]; then
   echo -e "  ${GREEN}✓${NC} plannotator CLI — visual plan review"
   echo -e "  ${GREEN}✓${NC} Claude Code hook — auto-review on ExitPlanMode"
 fi
+if [ "$TEA_OK" = true ]; then
+  echo -e "  ${GREEN}✓${NC} BMAD TEA framework — testing architecture & automation"
+fi
 echo -e "  ${GREEN}✓${NC} BMAD scripts — workflow orchestration"
 echo ""
 
@@ -193,12 +235,26 @@ echo -e "  ${BLUE}$([ "$INIT_PROJECT" = true ] && echo 1 || echo 2). Start your 
 echo -e "     ${YELLOW}/workflow-status${NC}  ← see what's recommended next"
 echo ""
 
-echo -e "  ${BLUE}$([ "$INIT_PROJECT" = true ] && echo 2 || echo 3). Review each phase document before advancing:${NC}"
+if [ "$TEA_OK" = true ]; then
+  echo -e "  ${BLUE}$([ "$INIT_PROJECT" = true ] && echo 2 || echo 3). TEA workflows (after Phase 3):${NC}"
+  echo -e "     ${GRAY}/tea-discovery${NC}  ← discover TEA workflows"
+  echo -e "     ${GRAY}/tea-tmt${NC}         ← Teach Me Testing course"
+  echo -e "     ${GRAY}/tea-td${NC}          ← Risk-based Test Design"
+  echo -e "     ${GRAY}/tea-tf${NC}          ← Test Framework setup"
+  echo -e "     ${GRAY}/tea-at${NC}          ← ATDD (red-phase tests)"
+  echo -e "     ${GRAY}/tea-ta${NC}          ← Test Automation"
+  echo -e "     ${GRAY}/tea-rv${NC}          ← Test Review (0-100 score)"
+  echo -e "     ${GRAY}/tea-nr${NC}          ← NFR Assessment"
+  echo -e "     ${GRAY}/tea-tr${NC}          ← Traceability"
+  echo ""
+fi
+
+echo -e "  ${BLUE}$([ "$TEA_OK" = true ] && echo $([ "$INIT_PROJECT" = true ] && echo 3 || echo 4) || echo $([ "$INIT_PROJECT" = true ] && echo 2 || echo 3)). Review each phase document before advancing:${NC}"
 echo -e "     ${GRAY}bash scripts/phase-gate-review.sh docs/prd-*.md${NC}"
 echo ""
 
 if [ "$PLANNOTATOR_OK" = true ]; then
-  echo -e "  ${BLUE}$([ "$INIT_PROJECT" = true ] && echo 3 || echo 4). Restart Claude Code${NC} so the hook takes effect."
+  echo -e "  ${BLUE}$([ "$TEA_OK" = true ] && echo $([ "$INIT_PROJECT" = true ] && echo 4 || echo 5) || echo $([ "$INIT_PROJECT" = true ] && echo 3 || echo 4)). Restart Claude Code${NC} so the hook takes effect."
   echo ""
 fi
 

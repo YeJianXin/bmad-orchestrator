@@ -147,3 +147,143 @@ tags: [bmad, phase-2, prd, myapp]
 | Phase 2 → 3 | PRD / Tech Spec | `bash scripts/phase-gate-review.sh docs/prd-*.md` |
 | Phase 3 → 4 | Architecture | `bash scripts/phase-gate-review.sh docs/architecture-*.md` |
 | Phase 4 done | Sprint Plan | `bash scripts/phase-gate-review.sh docs/sprint-status.yaml` |
+
+---
+
+## BMAD TEA Framework Integration
+
+BMAD TEA (Test Architecture) provides comprehensive testing workflows for quality assurance, test automation, and test governance. TEA is a **standalone workflow** that can be triggered anytime after Phase 3 (Solutioning).
+
+### Installation
+
+TEA framework is installed automatically when running the BMAD setup:
+
+```bash
+bash scripts/install.sh
+```
+
+To skip TEA installation:
+```bash
+bash scripts/install.sh --skip-tea
+```
+
+### When to Use TEA
+
+- **After Phase 3 (Solutioning)**: Set up test framework and design tests
+- **During Phase 4 (Implementation)**: Apply ATDD and automate tests
+- **After Phase 4 (Complete)**: Review tests, assess NFRs, verify traceability
+- **Anytime**: Learn testing fundamentals or explore workflows
+
+### TEA Workflow Commands
+
+| Category | Command | Purpose |
+|----------|---------|---------|
+| **Education** | `/tea-discovery` | Discover TEA workflows for your project |
+| **Education** | `/tea-tmt` | Teach Me Testing - 7-session course |
+| **Strategy** | `/tea-td` | Risk-based Test Design |
+| **Foundation** | `/tea-tf` | Test Framework setup |
+| **Foundation** | `/tea-ci` | CI/CD Quality Gates |
+| **Implementation** | `/tea-at` | ATDD (red-phase failing tests) |
+| **Implementation** | `/tea-ta` | Test Automation |
+| **Audit** | `/tea-rv` | Test Review (0-100 score) |
+| **Audit** | `/tea-nr` | NFR Assessment |
+| **Audit** | `/tea-tr` | Traceability |
+
+### TEA by Project Level
+
+| Level | Required TEA Workflows |
+|-------|------------------------|
+| Level 0 | TF (optional), TA (minimal) |
+| Level 1 | TF, AT, TA (basic) |
+| Level 2 | TF, TD, AT, TA, RV, TR |
+| Level 3 | All TEA workflows + NR |
+| Level 4 | All TEA workflows + Custom |
+
+### Typical TEA Integration Flow
+
+```
+Phase 3 Complete (Architecture)
+       ↓
+/tea-tf → Set up test framework
+/tea-td → Risk-based test design
+/tea-ci → Configure CI/CD quality gates
+       ↓
+Phase 4 (Implementation)
+       ↓
+/tea-at → ATDD for each story (red-phase tests)
+/tea-ta → Automate tests as features complete
+       ↓
+Phase 4 Complete
+       ↓
+/tea-rv → Comprehensive test review
+/tea-nr → NFR assessment
+/tea-tr → Traceability verification
+```
+
+### Getting Started with TEA
+
+1. **Discover TEA workflows:**
+   ```text
+   /tea-discovery
+   ```
+
+2. **Learn testing fundamentals (optional):**
+   ```text
+   /tea-tmt
+   ```
+
+3. **Set up test framework (after Phase 3):**
+   ```text
+   /tea-tf
+   ```
+
+4. **Apply ATDD during implementation:**
+   ```text
+   /tea-at
+   ```
+
+### TEA Workflow Details
+
+#### `/tea-discovery`
+Interactive discovery of TEA workflows based on your project context. Use this first to understand which TEA workflows are recommended for your project.
+
+#### `/tea-tmt` (Teach Me Testing)
+7-session fundamental course covering testing concepts, strategies, and best practices. Recommended for team members new to testing.
+
+#### `/tea-td` (Test Design)
+Risk-based test design that prioritizes test scenarios based on risk assessment. Creates a comprehensive test plan with prioritized test cases.
+
+#### `/tea-tf` (Test Framework)
+Scaffolds and sets up test framework infrastructure including test runners, mocking, fixtures, and CI/CD integration.
+
+#### `/tea-ci` (CI/CD Quality Gates)
+Configures automated quality gates in your CI/CD pipeline, ensuring tests run automatically and quality standards are met.
+
+#### `/tea-at` (ATDD)
+Acceptance Test-Driven Development workflow that creates red-phase failing tests for acceptance criteria before implementation.
+
+#### `/tea-ta` (Test Automation)
+Automates manual tests and creates comprehensive test suites with execution reports and coverage metrics.
+
+#### `/tea-rv` (Test Review)
+Comprehensive test review with 0-100 scoring, providing quality assessment and actionable recommendations.
+
+#### `/tea-nr` (NFR Assessment)
+Non-functional requirements testing assessment covering performance, security, reliability, scalability, and other quality attributes.
+
+#### `/tea-tr` (Traceability)
+Creates a traceability matrix linking requirements to test cases, ensuring full coverage and compliance.
+
+### TEA + plannotator Integration
+
+TEA workflows can also be reviewed with plannotator for quality assurance:
+
+```bash
+# After test design
+bash scripts/phase-gate-review.sh docs/tea-test-design-*.md
+
+# After test review
+bash scripts/phase-gate-review.sh docs/tea-test-review-*.md
+```
+
+This ensures test artifacts undergo the same rigorous review process as other BMAD deliverables.

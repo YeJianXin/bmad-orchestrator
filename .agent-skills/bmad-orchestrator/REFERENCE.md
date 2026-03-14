@@ -72,6 +72,213 @@ Step 3: Return recommendation with explanation
 - All stories in sprint-status.yaml marked as "done"
 - Final review/retrospective complete
 
+---
+
+## TEA Workflow Routing Logic
+
+### TEA Activation Rules
+
+TEA (Test Architecture) workflows are **standalone** and can be triggered anytime after Phase 3 (Solutioning) is complete.
+
+### When to Recommend TEA
+
+**After Phase 3 (Solutioning) complete:**
+- If TEA framework installed: Recommend `/tea-discovery` to explore workflows
+- If project level >= 2: Recommend `/tea-tf` (Test Framework setup)
+
+**During Phase 4 (Implementation):**
+- If sprint active and stories exist: Recommend `/tea-at` (ATDD) before implementing each story
+- After story implementation: Recommend `/tea-ta` (Test Automation) to automate tests
+
+**After Phase 4 (Implementation) complete:**
+- If project level >= 2: Recommend `/tea-rv` (Test Review)
+- If project level >= 3: Recommend `/tea-nr` (NFR Assessment)
+- If project level >= 2: Recommend `/tea-tr` (Traceability)
+
+**Anytime:**
+- If user requests testing help: Recommend `/tea-discovery`
+- If team needs testing education: Recommend `/tea-tmt`
+
+### TEA Workflow Selection Algorithm
+
+```
+Input: project_level, current_phase, user_context
+Output: recommended TEA workflow
+
+Step 1: Check TEA installation
+  - If TEA not installed:
+    * Recommend: bash scripts/install.sh (or skip with --skip-tea)
+    * Exit
+
+Step 2: Check Phase 3 completion
+  - If Phase 3 not complete:
+    * Do NOT recommend TEA workflows
+    * Explain: TEA available after Phase 3 (Solutioning)
+    * Exit
+
+Step 3: Determine TEA workflow based on context
+
+  Context: First time using TEA
+    → Recommend: /tea-discovery
+
+  Context: After Phase 3 complete, before Phase 4
+    Level 0: /tea-tf (optional), /tea-ta (minimal)
+    Level 1: /tea-tf, /tea-at, /tea-ta (basic)
+    Level 2+: /tea-tf, /tea-td, /tea-ci
+
+  Context: During Phase 4 implementation
+    → Recommend: /tea-at (before each story)
+    → Recommend: /tea-ta (after each story)
+
+  Context: Phase 4 complete
+    Level 0: /tea-rv (optional)
+    Level 1: /tea-rv, /tea-tr
+    Level 2+: /tea-rv, /tea-tr, /tea-nr (if Level 3+)
+
+  Context: User requests testing education
+    → Recommend: /tea-tmt
+
+  Context: User requests test review
+    → Recommend: /tea-rv
+
+  Context: User requests NFR testing
+    → Recommend: /tea-nr
+
+Step 4: Return recommendation with explanation
+```
+
+### TEA Workflow Dependencies
+
+```
+/tea-discovery → No dependencies (can be first)
+
+/tea-tmt → No dependencies (can be anytime)
+
+/tea-tf → Phase 3 complete (Architecture done)
+
+/tea-td → /tea-tf (recommended)
+
+/tea-ci → /tea-tf (required)
+
+/tea-at → /tea-tf (recommended)
+
+/tea-ta → /tea-tf (required), /tea-at (recommended)
+
+/tea-rv → /tea-ta (recommended)
+
+/tea-nr → /tea-rv (recommended)
+
+/tea-tr → /tea-ta (recommended)
+```
+
+### TEA Status Tracking
+
+TEA workflows are tracked in the workflow status file alongside BMAD phases:
+
+```yaml
+workflow_status:
+  # ... BMAD workflows ...
+
+  # TEA Workflows (standalone, after Phase 3)
+  - name: tea-discovery
+    phase: TEA
+    status: "optional"
+    description: "Discover TEA workflows for your project"
+    command: "/tea-discovery"
+
+  - name: tea-tf
+    phase: TEA
+    status: "conditional"  # Required based on project level
+    description: "Test Framework setup and scaffolding"
+    command: "/tea-tf"
+
+  - name: tea-td
+    phase: TEA
+    status: "conditional"
+    description: "Risk-based Test Design"
+    command: "/tea-td"
+
+  - name: tea-ci
+    phase: TEA
+    status: "optional"
+    description: "CI/CD Quality Gates configuration"
+    command: "/tea-ci"
+
+  - name: tea-at
+    phase: TEA
+    status: "conditional"
+    description: "ATDD - Acceptance Test-Driven Development"
+    command: "/tea-at"
+
+  - name: tea-ta
+    phase: TEA
+    status: "conditional"
+    description: "Test Automation"
+    command: "/tea-ta"
+
+  - name: tea-rv
+    phase: TEA
+    status: "conditional"
+    description: "Test Review with 0-100 scoring"
+    command: "/tea-rv"
+
+  - name: tea-nr
+    phase: TEA
+    status: "conditional"
+    description: "NFR Assessment"
+    command: "/tea-nr"
+
+  - name: tea-tr
+    phase: TEA
+    status: "conditional"
+    description: "Traceability matrix"
+    command: "/tea-tr"
+```
+
+### TEA Conditional Status Logic
+
+TEA workflow status is set based on project level during initialization:
+
+```yaml
+# Level 0 project
+tea-tf: "optional"
+tea-td: "optional"
+tea-at: "optional"
+tea-ta: "optional"
+tea-rv: "optional"
+tea-nr: "optional"
+tea-tr: "optional"
+
+# Level 1 project
+tea-tf: "required"
+tea-td: "optional"
+tea-at: "required"
+tea-ta: "required"
+tea-rv: "recommended"
+tea-nr: "optional"
+tea-tr: "recommended"
+
+# Level 2 project
+tea-tf: "required"
+tea-td: "required"
+tea-at: "required"
+tea-ta: "required"
+tea-rv: "required"
+tea-nr: "optional"
+tea-tr: "required"
+
+# Level 3+ project
+tea-tf: "required"
+tea-td: "required"
+tea-at: "required"
+tea-ta: "required"
+tea-rv: "required"
+tea-nr: "required"
+tea-tr: "required"
+```
+
+---
+
 ## Project Level Guidelines
 
 ### Level 0: Single Atomic Change (1 story)
